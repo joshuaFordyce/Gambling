@@ -153,33 +153,55 @@ def plot_exp_1(res):
 
 def ex_plot_2(res):
     ##plot_4():
-    df = pd.DataFrame(res)
-    df.plot()
-    axis = [0,300,-256,100]
-    plt.axis(axis)
-    plt.title("Figure 1 10 trials with unlimited bankroll")
-    plt.xlabel("Trial Number")
-    plt.ylabel("winnings")
-    index = 10
+    index = 1000
+    zeros = np.full((1000,1001), 0)
     for i in range(index):
         cur = simulator_exp2(.60)
-        plt.plot(cur)
-    plt.savefig("figure1.png")
+
+        zeros[i] = cur
+    mean  = np.mean(zeros, axis = 0)
+    std = np.std(zeros, axis = 0)
+    added = mean + std
+    subtracted = mean - std
+    
+    
+    np.mean(zeros) 
+    df = pd.DataFrame(mean)
+    df1 = pd.DataFrame(added)
+    df2 = pd.DataFrame(subtracted)
+
+    #df.plot()
+    axis = [0,300,-256,100]
+    plt.axis(axis)
+    plt.title("Figure4 - mean of 1000 trials with limited bankroll")
+    plt.xlabel("Trials")
+    plt.ylabel("winnings")
+    plt.plot(mean, label = "mean")
+    plt.plot(mean, label = "meanAdded")
+    plt.plot(mean, label = "meanSubtracted")
+    plt.legend()
+    plt.savefig("figure4.png")
     plt.clf()
 
     ##plot_5():
-    df = pd.DataFrame(res)
-    df.plot()
+    median = np.median(zeros, axis = 0)
+    added = median + std 
+    subtracted = median - std  
+    df = pd.DataFrame(median)
+    df1 = pd.DataFrame(added)
+    df2 = pd.DataFrame(subtracted)
+
+    #df.plot()
     axis = [0,300,-256,100]
     plt.axis(axis)
-    plt.title("Figure 1 10 trials with unlimited bankroll")
-    plt.xlabel("Trial Number")
+    plt.title("Figure5 - median of 1000 trials with limited bankroll")
+    plt.xlabel("Trials")
     plt.ylabel("winnings")
-    index = 10
-    for i in range(index):
-        cur = simulator_exp1(.60)
-        plt.plot(cur)
-    plt.savefig("figure1.png")
+    plt.plot(median, label = "median")
+    plt.plot(added, label = "medianAdded")
+    plt.plot(subtracted, label = "medianSubtracted")
+    plt.legend()
+    plt.savefig("figure5.png")
     plt.clf()
 
 
@@ -207,10 +229,11 @@ def simulator_exp1(win_prob):
         #plot_3(res)
     return res 
 
-def simulator_exp2(win_prob,bankroll):   
+def simulator_exp2(win_prob):   
     res = np.zeros(1001)
     winnings = 0
     count = 0
+    bankroll = 256
     while winnings < 80:
         won = False
         bet_amount = 1
